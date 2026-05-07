@@ -33,14 +33,16 @@ export function parseParagraphs (doc, styleMap) {
     }
   }
 
+  // 分节符后的段落视为有分页
+  for (let i = 1; i < paragraphs.length; i++) {
+    if (paragraphs[i - 1].hasSectPr) {
+      paragraphs[i].pageBreakBefore = true;
+    }
+  }
+
   const tocMap = tocEntries.length > 0
     ? new Map(tocEntries.map(e => [e.cleanedText, e.level]))
     : null;
-
-  console.log('前10段段落信息：');
-  paragraphs.slice(0, 10).forEach((p, idx) => {
-    console.log(`${idx} isTOC:${p.isTOC} styleId:${p.styleId} text:"${p.text.slice(0, 30)}"`);
-  });
 
   return {
     paragraphs,
@@ -86,8 +88,8 @@ function parseSingleParagraph (pNode, styleMap, isTable) {
   const paraStyle = styleMap.paragraphStyles[styleId] || {};
   const paraCustomProps = extractParagraphProps(pPr);
   const mergedParaStyle = mergeStyles(
-    styleMap.docDefaults.pPr,
-    paraStyle.pPr,
+    extractParagraphProps(styleMap.docDefaults.pPr),
+    extractParagraphProps(paraStyle.pPr),
     paraCustomProps
   );
 
@@ -102,7 +104,8 @@ function parseSingleParagraph (pNode, styleMap, isTable) {
   let outlineLevel = parseInt(pPr.outlineLvl?.['@_val'], 10) || 0;
   if (outlineLevel === 0) outlineLevel = paraStyle.outlineLevel || 0;
 
-  const pageBreakBefore = !!(pPr.pageBreakBefore || mergedParaStyle.pageBreakBefore);
+  const pageBreakBefore = !!(pPr.pageBreakBefore !== undefined || mergedParaStyle.pageBreakBefore);
+  const hasSectPr = !!(pPr.sectPr !== undefined || mergedParaStyle.hasSectPr);
 
   const baseRunStyle = mergeStyles(
     extractRunProps(styleMap.docDefaults.rPr),
@@ -130,7 +133,7 @@ function parseSingleParagraph (pNode, styleMap, isTable) {
     // 提取样式（只处理有文本的 run）
     const rPr = rNode.rPr || {};
     const runStyleId = rPr.rStyle?.['@_val'];
-    const charStyle = styleMap.characterStyles[runStyleId]?.rPr || {};
+    const charStyle = extractRunProps(styleMap.characterStyles[runStyleId]?.rPr);
 
     const runStyle = mergeStyles(
       baseRunStyle,
@@ -174,6 +177,7 @@ function parseSingleParagraph (pNode, styleMap, isTable) {
     isTable,
     isTOC,
     tocLevel,
+    hasSectPr,
   };
 }
 

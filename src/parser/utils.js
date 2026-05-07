@@ -23,7 +23,9 @@ export function extractParagraphProps (pPrNode) {
   }
 
   // 分页
-  if (pPrNode.pageBreakBefore) props.pageBreakBefore = true;
+  if (pPrNode.pageBreakBefore !== undefined) props.pageBreakBefore = true;
+  // 分节符（在 Word 中同样引起分页）
+  if (pPrNode.sectPr !== undefined) props.hasSectPr = true;
 
   return props;
 }
@@ -41,9 +43,12 @@ export function extractRunProps (rPrNode) {
   if (rPrNode.sz) props.fontSize = rPrNode.sz['@_val'];
   if (rPrNode.szCs) props.fontSizeCs = rPrNode.szCs['@_val'];
 
-  props.bold = rPrNode.b && rPrNode.b['@_val'] !== '0' && rPrNode.b['@_val'] !== 'false';
-  props.italic = rPrNode.i && rPrNode.i['@_val'] !== '0' && rPrNode.i['@_val'] !== 'false';
-  props.underline = rPrNode.u && rPrNode.u['@_val'] !== 'none';
+  const hasB = rPrNode.b !== undefined;
+  props.bold = hasB && rPrNode.b['@_val'] !== '0' && rPrNode.b['@_val'] !== 'false';
+  const hasI = rPrNode.i !== undefined;
+  props.italic = hasI && rPrNode.i['@_val'] !== '0' && rPrNode.i['@_val'] !== 'false';
+  const hasU = rPrNode.u !== undefined;
+  props.underline = hasU && rPrNode.u['@_val'] !== 'none';
   if (rPrNode.color) props.color = rPrNode.color['@_val'];
 
   return props;

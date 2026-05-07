@@ -5,15 +5,16 @@ function cleanTitleText (text) {
   return text.replace(/^[\d\.\s\u00A0]+/, '').trim();
 }
 
-export function paragraphRule (paragraphs, config, sections, tocMap, skipAllTexts = []) {
+export function paragraphRule (paragraphs, config, sections, tocMap, skipAllTexts = [], captionIndices = new Set()) {
   const errors = [];
   const {
     headings,
     content,
-    specialSections = [],    // 用于其他规则（如分页/居中）
-    skipIndentSections = [],  // 用于首行缩进豁免
-    skipIndentTexts = [],      // 用于首行缩进豁免（文本开头匹配）
-    frontMatterTexts = []        // 用于完全跳过检查的文本（如封面标题等）
+    specialSections = [],
+    skipIndentSections = [],
+    skipIndentTexts = [],
+    frontMatterTexts = [],
+    headingTexts = {},
   } = config;
 
   // 过滤掉目录段落
@@ -25,7 +26,9 @@ export function paragraphRule (paragraphs, config, sections, tocMap, skipAllText
     if (tocMap && tocMap.has(cleaned)) {
       return tocMap.get(cleaned);
     }
-    // 回退：根据样式 ID 映射（已知 heading 样式 ID 为 "1","2","3"）
+    if (headingTexts[para.text.trim()]) {
+      return headingTexts[para.text.trim()];
+    }
     if (para.styleId === '1') return 1;
     if (para.styleId === '2') return 2;
     if (para.styleId === '3') return 3;
@@ -90,6 +93,8 @@ export function paragraphRule (paragraphs, config, sections, tocMap, skipAllText
     // ====== 正文内容检查（仅对非标题、非表格段落） ======
     // 跳过表格段落（若 isTable 为 true）
     if (para.isTable) continue;
+    // 跳过图题段落，由 imageRule 单独检查
+    if (captionIndices.has(i)) continue;
 
     // 全文字体颜色会在 runRule 中统一检查，这里不再重复
 

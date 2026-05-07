@@ -36,10 +36,11 @@ export function imageRule (paragraphs, config, skipAllTexts = []) {
           // 判断是纯数字/小数点/空格 还是汉字
           const isNumberRun = /^[\d\.\s]+$/.test(run.text);
           if (isNumberRun) {
-            if (run.font !== imageCaption.numberFont || run.fontSize != imageCaption.numberSize) {
+            const validNumberFonts = [imageCaption.numberFont, imageCaption.font];
+            if (!validNumberFonts.includes(run.font) || run.fontSize != imageCaption.numberSize) {
               errors.push({
                 type: 'error',
-                message: `图题数字部分应为 Times New Roman ${imageCaption.numberSize / 2}pt 加粗`,
+                message: `图题数字部分应为 ${imageCaption.numberFont} 或 ${imageCaption.font} ${imageCaption.numberSize / 2}pt 加粗`,
                 location: { paragraphIndex: i + 1, runIndex: rIdx, text: run.text }
               });
             }
@@ -73,6 +74,6 @@ export function imageRule (paragraphs, config, skipAllTexts = []) {
   return errors;
 }
 
-function isImageCaption (text) {
-  return /^图\d+(\.\d+)?\s/.test(text);
+export function isImageCaption (text) {
+  return /^图[\d.\s]*[一-龥]/.test(text);
 }

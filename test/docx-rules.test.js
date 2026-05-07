@@ -303,7 +303,7 @@ describe('imageRule', () => {
       computedStyle: { alignment: 'center' },
       runs: [
         mockRun({ text: '图', font: '宋体', fontSize: '18', bold: true }),
-        mockRun({ text: '1', font: '宋体', fontSize: '18', bold: true }), // 应报错：数字部分应为 Times New Roman
+        mockRun({ text: '1', font: '黑体', fontSize: '18', bold: true }), // 应报错：数字部分字体无效
         mockRun({ text: ' 网站首页', font: '宋体', fontSize: '18', bold: true }),
       ],
     });
