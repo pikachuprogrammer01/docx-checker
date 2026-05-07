@@ -2,12 +2,10 @@
 export function imageRule (paragraphs, config, skipAllTexts = []) {
   const errors = [];
   const { imageCaption } = config;
-  const nonTOCParagraphs = paragraphs.filter(p => !p.isTOC);
-
-  for (let i = 0; i < nonTOCParagraphs.length; i++) {
-    const para = nonTOCParagraphs[i];
-    if (skipAllTexts.includes(para.text.trim())) continue;
+  for (let i = 0; i < paragraphs.length; i++) {
+    const para = paragraphs[i];
     if (para.isTOC) continue;
+    if (skipAllTexts.includes(para.text.trim())) continue;
     // 如果该段落包含图片 — 图片段落可能无文本，需在空文本判断前检查
     if (para.containsImage) {
       // 检查图片对齐（段落居中判断：computedStyle.alignment 应为 'center'）
@@ -19,13 +17,17 @@ export function imageRule (paragraphs, config, skipAllTexts = []) {
           location: { paragraphIndex: i }
         });
       }
-      // 检查下一段是否图题
-      const nextPara = nonTOCParagraphs[i + 1];
+      // 检查下一段是否图题（跳过 TOC 段落）
+      let nextIdx = i + 1;
+      while (nextIdx < paragraphs.length && paragraphs[nextIdx].isTOC) {
+        nextIdx++;
+      }
+      const nextPara = nextIdx < paragraphs.length ? paragraphs[nextIdx] : null;
       if (nextPara && isImageCaption(nextPara.text)) {
         const capStyle = nextPara.computedStyle || {};
         // 整体对齐
         if (capStyle.alignment !== 'center') {
-          errors.push({ type: 'error', message: '图题应居中', location: { paragraphIndex: i + 1 } });
+          errors.push({ type: 'error', message: '图题应居中', location: { paragraphIndex: nextIdx } });
         }
 
         // 遍历 runs 检查字体和加粗
@@ -41,13 +43,13 @@ export function imageRule (paragraphs, config, skipAllTexts = []) {
               errors.push({
                 type: 'error',
                 message: `图题数字部分应为 ${imageCaption.numberFont} 或 ${imageCaption.font} ${imageCaption.numberSize / 2}pt 加粗`,
-                location: { paragraphIndex: i + 1, runIndex: rIdx, text: run.text }
+                location: { paragraphIndex: nextIdx, runIndex: rIdx, text: run.text }
               });
             }
             if (!run.bold) {
               errors.push({
                 type: 'error', message: '图题数字部分应加粗',
-                location: { paragraphIndex: i + 1, runIndex: rIdx, text: run.text }
+                location: { paragraphIndex: nextIdx, runIndex: rIdx, text: run.text }
               });
             }
           } else {
@@ -56,13 +58,13 @@ export function imageRule (paragraphs, config, skipAllTexts = []) {
               errors.push({
                 type: 'error',
                 message: `图题文字应为宋体小五号加粗`,
-                location: { paragraphIndex: i + 1, runIndex: rIdx, text: run.text }
+                location: { paragraphIndex: nextIdx, runIndex: rIdx, text: run.text }
               });
             }
             if (!run.bold) {
               errors.push({
                 type: 'error', message: '图题文字应加粗',
-                location: { paragraphIndex: i + 1, runIndex: rIdx, text: run.text }
+                location: { paragraphIndex: nextIdx, runIndex: rIdx, text: run.text }
               });
             }
           }

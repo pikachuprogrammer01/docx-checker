@@ -38,17 +38,26 @@ export function extractRunProps (rPrNode) {
   const props = {};
 
   if (rPrNode.rFonts) {
-    props.font = rPrNode.rFonts['@_eastAsia'] || rPrNode.rFonts['@_ascii'];
+    const rFonts = rPrNode.rFonts;
+    props.font = rFonts['@_eastAsia'] || rFonts['@_ascii'];
+    props.fontAscii = rFonts['@_ascii'] || rFonts['@_hAnsi'] || rFonts['@_eastAsia'];
+    props.fontEastAsia = rFonts['@_eastAsia'] || rFonts['@_ascii'];
   }
   if (rPrNode.sz) props.fontSize = rPrNode.sz['@_val'];
   if (rPrNode.szCs) props.fontSizeCs = rPrNode.szCs['@_val'];
 
   const hasB = rPrNode.b !== undefined;
-  props.bold = hasB && rPrNode.b['@_val'] !== '0' && rPrNode.b['@_val'] !== 'false';
+  if (hasB) {
+    props.bold = rPrNode.b['@_val'] !== '0' && rPrNode.b['@_val'] !== 'false';
+  }
   const hasI = rPrNode.i !== undefined;
-  props.italic = hasI && rPrNode.i['@_val'] !== '0' && rPrNode.i['@_val'] !== 'false';
+  if (hasI) {
+    props.italic = rPrNode.i['@_val'] !== '0' && rPrNode.i['@_val'] !== 'false';
+  }
   const hasU = rPrNode.u !== undefined;
-  props.underline = hasU && rPrNode.u['@_val'] !== 'none';
+  if (hasU) {
+    props.underline = rPrNode.u['@_val'] !== 'none';
+  }
   if (rPrNode.color) props.color = rPrNode.color['@_val'];
 
   return props;

@@ -2,10 +2,9 @@
 export function specialRule (paragraphs, config, skipAllTexts = []) {
   const errors = [];
   const specialTitles = config.specialSections || [];
-  const nonTOCParagraphs = paragraphs.filter(p => !p.isTOC);
-
-  for (let i = 0; i < nonTOCParagraphs.length; i++) {
-    const para = nonTOCParagraphs[i];
+  for (let i = 0; i < paragraphs.length; i++) {
+    const para = paragraphs[i];
+    if (para.isTOC) continue;
     if (skipAllTexts.includes(para.text.trim())) continue;
 
     const text = para.text.trim();

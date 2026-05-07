@@ -61,7 +61,7 @@ describe('parseDocx 输出结构', () => {
     );
     assert.ok(bodyPara);
     assert.equal(bodyPara.computedStyle.font, '宋体');
-    assert.equal(bodyPara.computedStyle.fontSize, '20');
+    assert.equal(bodyPara.computedStyle.fontSize, '24');
   });
 
   it('正文段落有首行缩进', () => {

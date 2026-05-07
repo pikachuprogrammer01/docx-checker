@@ -20,7 +20,7 @@
     "centered": true,
     "color": "000000"
   },
-  "headingTexts": { "摘要": 1 },
+  "headingTexts": { "摘要": 1, "目录": 1 },
   "specialSections": ["参考文献", "致谢"],
   "skipIndentSections": ["参考文献"],
   "logoTextPattern": "LOGO",

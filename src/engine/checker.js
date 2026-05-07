@@ -11,11 +11,11 @@ export function checkDocument(parsedDoc, standard) {
 
   const skipAllTexts = standard.frontMatterTexts || [];
 
-  const nonTOCParagraphs = paragraphs.filter(p => !p.isTOC);
   const captionIndices = new Set();
-  for (let i = 0; i < nonTOCParagraphs.length; i++) {
-    if (nonTOCParagraphs[i].containsImage) {
-      const next = nonTOCParagraphs[i + 1];
+  for (let i = 0; i < paragraphs.length; i++) {
+    if (paragraphs[i].isTOC) continue;
+    if (paragraphs[i].containsImage) {
+      const next = paragraphs[i + 1];
       if (next && isImageCaption(next.text)) {
         captionIndices.add(i + 1);
       }

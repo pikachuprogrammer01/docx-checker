@@ -17,17 +17,19 @@ export function paragraphRule (paragraphs, config, sections, tocMap, skipAllText
     headingTexts = {},
   } = config;
 
-  // 过滤掉目录段落
-  const nonTOCParagraphs = paragraphs.filter(p => !p.isTOC);
-
   // 辅助函数：确定段落的标题级别（以目录为准）
   const getHeadingLevel = (para) => {
     const cleaned = cleanTitleText(para.text);
     if (tocMap && tocMap.has(cleaned)) {
       return tocMap.get(cleaned);
     }
-    if (headingTexts[para.text.trim()]) {
-      return headingTexts[para.text.trim()];
+    const trimmed = para.text.trim();
+    if (headingTexts[trimmed]) {
+      return headingTexts[trimmed];
+    }
+    const collapsed = trimmed.replace(/\s+/g, '');
+    if (headingTexts[collapsed]) {
+      return headingTexts[collapsed];
     }
     if (para.styleId === '1') return 1;
     if (para.styleId === '2') return 2;
@@ -37,8 +39,9 @@ export function paragraphRule (paragraphs, config, sections, tocMap, skipAllText
 
   let skipIndent = false;
 
-  for (let i = 0; i < nonTOCParagraphs.length; i++) {
-    const para = nonTOCParagraphs[i];
+  for (let i = 0; i < paragraphs.length; i++) {
+    const para = paragraphs[i];
+    if (para.isTOC) continue;
     if (!para.text || para.text.trim() === '') continue;
 
     const text = para.text.trim();

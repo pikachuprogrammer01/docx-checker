@@ -147,6 +147,7 @@ function parseSingleParagraph (pNode, styleMap, isTable) {
       italic: runStyle.italic || false,
       underline: runStyle.underline || false,
       font: runStyle.font,
+      fontAscii: runStyle.fontAscii,
       fontSize: runStyle.fontSize || runStyle.fontSizeCs,
       color: runStyle.color,
     });
@@ -158,6 +159,7 @@ function parseSingleParagraph (pNode, styleMap, isTable) {
   const representativeRun = runs.find(r => r.font || r.fontSize) || {};
   const computedStyle = {
     font: representativeRun.font || mergedParaStyle.font,
+    fontAscii: representativeRun.fontAscii || mergedParaStyle.fontAscii,
     fontSize: representativeRun.fontSize || mergedParaStyle.fontSize || mergedParaStyle.fontSizeCs,
     lineSpacing: mergedParaStyle.lineSpacing,
     lineRule: mergedParaStyle.lineRule,

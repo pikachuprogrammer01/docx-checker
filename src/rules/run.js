@@ -2,10 +2,9 @@
 export function runRule (paragraphs, config, skipAllTexts = []) {
   const errors = [];
   const contentColor = config.content.color; // "000000"
-  const nonTOCParagraphs = paragraphs.filter(p => !p.isTOC);
-
-  for (let i = 0; i < nonTOCParagraphs.length; i++) {
-    const para = nonTOCParagraphs[i];
+  for (let i = 0; i < paragraphs.length; i++) {
+    const para = paragraphs[i];
+    if (para.isTOC) continue;
     if (skipAllTexts.includes(para.text.trim())) continue;
     for (let j = 0; j < para.runs.length; j++) {
       const run = para.runs[j];

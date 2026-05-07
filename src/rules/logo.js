@@ -2,9 +2,9 @@
 export function logoRule (paragraphs, config, skipAllTexts = []) {
   const errors = [];
   const pattern = config.logoTextPattern || 'LOGO';
-  const nonTOCParagraphs = paragraphs.filter(p => !p.isTOC);
-  for (let i = 0; i < nonTOCParagraphs.length; i++) {
-    const para = nonTOCParagraphs[i];
+  for (let i = 0; i < paragraphs.length; i++) {
+    const para = paragraphs[i];
+    if (para.isTOC) continue;
     if (skipAllTexts.includes(para.text.trim())) continue;
 
     const fullText = para.text;
