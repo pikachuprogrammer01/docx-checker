@@ -118,17 +118,19 @@ export function paragraphRule (paragraphs, config, sections, tocMap, skipAllText
       });
     }
     // 行距（全文1.5倍，表格除外）
-    if (style.lineSpacing != null && style.lineSpacing != content.lineSpacing) {
+    if (style.lineSpacing != content.lineSpacing) {
       errors.push({
         type: 'error',
-        message: `行距应为1.5倍行距(360twips)，实际为${style.lineSpacing}`,
+        message: style.lineSpacing != null
+          ? `行距应为1.5倍行距(${content.lineSpacing}twips)，实际为${style.lineSpacing}twips`
+          : `行距应为1.5倍行距(${content.lineSpacing}twips)，实际未设置`,
         location: { paragraphIndex: i, field: 'computedStyle.lineSpacing' }
       });
     }
-    // 首行缩进：仅在非豁免区域检查
+    // 首行缩进：仅在非豁免区域检查，有特殊左缩进的段落（如列表段落）也跳过
     if (!skipIndent && !skipIndentTexts.some(t => text.startsWith(t))) {
       const indent = style.indent || {};
-      if (indent.firstLine != null && indent.firstLine != content.firstLineIndent) {
+      if (indent.firstLine != null && indent.firstLine != content.firstLineIndent && !(indent.left && indent.left !== '0')) {
         errors.push({
           type: 'error',
           message: `正文首行缩进应为${content.firstLineIndent}twips，实际为${indent.firstLine}twips`,
