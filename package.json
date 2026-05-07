@@ -1,0 +1,23 @@
+{
+  "name": "docx-checker",
+  "version": "1.0.0",
+  "description": "DOCX 格式检测工具 — 检查论文格式是否符合标准",
+  "type": "module",
+  "main": "main.js",
+  "bin": {
+    "docx-checker": "main.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:parser": "node --test test/docx-parser.test.js",
+    "test:rules": "node --test test/docx-rules.test.js",
+    "check": "node main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fast-xml-parser": "^5.7.3",
+    "jszip": "^3.10.1",
+    "officeparser": "^6.1.1"
+  }
+}

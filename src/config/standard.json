@@ -1,0 +1,41 @@
+{
+  "headings": {
+    "1": { "font": "宋体", "fontSize": 28, "bold": true, "color": "000000" },
+    "2": { "font": "宋体", "fontSize": 24, "bold": true, "color": "000000" },
+    "3": { "font": "宋体", "fontSize": 24, "bold": false, "color": "000000" }
+  },
+  "content": {
+    "font": "宋体",
+    "fontSize": 24,
+    "firstLineIndent": 480,
+    "lineSpacing": 360,
+    "color": "000000"
+  },
+  "imageCaption": {
+    "font": "宋体",
+    "fontSize": 18,
+    "bold": true,
+    "numberFont": "Times New Roman",
+    "numberSize": 18,
+    "centered": true,
+    "color": "000000"
+  },
+  "specialSections": ["参考文献", "致谢"],
+  "skipIndentSections": ["参考文献"],
+  "logoTextPattern": "LOGO",
+  "frontMatterTexts": [
+    "长沙环境保护职业技术学院",
+    "毕业设计成果报告",
+    "成果名称",
+    "设计类型",
+    "学生姓名",
+    "二级学院",
+    "专业",
+    "班级",
+    "学号",
+    "校内指导老师",
+    "校外指导老师",
+    "完成时间"
+  ],
+  "skipIndentTexts": ["关键词："]
+}
